@@ -9,12 +9,12 @@ import { ShoppingListservice } from './shopping-list.service';
 })
 export class ShoppingListComponent implements OnInit, OnDestroy {
       ingredients: Ingredient [];
-       private igChanged : Subscription;
+       private subscription : Subscription;
   constructor(private slSerivce: ShoppingListservice) { }
 
   ngOnInit(){
     this.ingredients=this.slSerivce.getIngredients();
-    this.igChanged = this.slSerivce.ingredientsChanged //this igChanged might have changed to 'subscription' name
+    this.subscription = this.slSerivce.ingredientsChanged
      .subscribe(
        (ingredients: Ingredient[]) => {
          this.ingredients = ingredients;
@@ -22,7 +22,12 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
      );
   }
 
+  onEditItem(index: number){
+    this.slSerivce.startedEditing.next(index);
+    // here the subject is emitting the index
+  }
+
  ngOnDestroy(): void {
-  this.igChanged.unsubscribe;
+  this.subscription.unsubscribe;
  }
 }

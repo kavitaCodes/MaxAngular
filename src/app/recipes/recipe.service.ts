@@ -1,4 +1,5 @@
  import { EventEmitter, Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
  import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListservice } from '../shopping-list/shopping-list.service';
 import { Recipe } from './recipe.model';
@@ -10,6 +11,8 @@ export class RecipeService {
 //      new Recipe('A test recipe', 'This is simply a test', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Recipe_logo.jpeg/600px-Recipe_logo.jpeg'),
 //      new Recipe('Shrimp', 'This is shrimp a test', 'https://storage.needpix.com/rsynced_images/food-1459693_1280.jpg')
 //      ];
+
+recipesChanged = new Subject<Recipe[]>();
 
 private recipes: Recipe[] = [
      new Recipe('Apple pie',
@@ -42,6 +45,23 @@ private recipes: Recipe[] = [
      getRecipe(index: number) {
          return this.recipes[index];
      }
+
+     addRecipe(recipe: Recipe){
+       this.recipes.push(recipe);
+       this.recipesChanged.next(this.recipes.slice());
+     }
+
+     updateRecipe(index: number, newRecipe: Recipe){
+       this.recipes[index]= newRecipe;
+       this.recipesChanged.next(this.recipes.slice());
+     }
+
+
+     deleteRecipe(index: number) {
+       this.recipes.splice(index,1);
+       this.recipesChanged.next(this.recipes.slice());
+     }
+
 
 
 }
